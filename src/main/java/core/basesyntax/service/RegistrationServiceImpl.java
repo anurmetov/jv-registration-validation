@@ -11,8 +11,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public User register(User user) {
-        if (!Storage.people.contains(user) && user.getLogin().length() > 6
-        && user.getPassword().length() > 6 && user.getAge() >= 18) {
+        if (!Storage.people.contains(user) && user.getLogin().length() >= 6
+        && user.getPassword().length() >= 6 && user.getAge() >= 18) {
             storageDao.add(user);
             return user;
         } else {
