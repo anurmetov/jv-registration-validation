@@ -11,12 +11,28 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public User register(User user) {
-        if (!Storage.people.contains(user) && user.getLogin().length() >= 6
-        && user.getPassword().length() >= 6 && user.getAge() >= 18) {
-            storageDao.add(user);
-            return user;
-        } else {
-            throw new InvalidUserRegistration("This user already exists or login/password are too short or user is under 18");
+        if (user.getLogin() == null) {
+            throw new InvalidUserRegistration("Login cannot be null");
         }
+        if (user.getPassword() == null) {
+            throw new InvalidUserRegistration("Password cannot be null");
+        }
+        if (user.getAge() == null) {
+            throw new InvalidUserRegistration("Age cannot be null");
+        }
+        if (user.getLogin().length() < 6) {
+            throw new InvalidUserRegistration("Login length cannot be less than 6");
+        }
+        if (user.getPassword().length() < 6) {
+            throw new InvalidUserRegistration("Password length cannot be less than 6");
+        }
+        if (user.getAge() <= 18) {
+            throw new InvalidUserRegistration("Age cannot be less than 18");
+        }
+        if (Storage.people.contains(user)) {
+            throw new InvalidUserRegistration("This user already exists");
+        }
+        storageDao.add(user);
+        return user;
     }
 }
