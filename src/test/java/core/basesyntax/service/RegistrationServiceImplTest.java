@@ -66,6 +66,8 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_passwordSixChars_Ok() throws InvalidDataException {
+
+        // FDASFDA
         User newUser = new User();
         newUser.setLogin("unique");
         newUser.setPassword("unique");
