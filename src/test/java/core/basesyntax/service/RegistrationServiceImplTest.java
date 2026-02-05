@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import core.basesyntax.dao.StorageDao;
 import core.basesyntax.dao.StorageDaoImpl;
+import core.basesyntax.db.Storage;
 import core.basesyntax.exceptions.InvalidDataException;
 import core.basesyntax.model.User;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,18 +22,17 @@ class RegistrationServiceImplTest {
     static void beforeAll() throws InvalidDataException {
         registrationService = new RegistrationServiceImpl();
         storageDao = new StorageDaoImpl();
+    }
+
+    @BeforeEach
+    void setUp() {
+        Storage.people.clear();
         user = new User();
         user.setLogin("uniqueLogin");
         user.setPassword("uniquePassword");
         user.setId(3L);
         user.setAge(20);
         registeredUser = registrationService.register(user);
-    }
-
-    @BeforeEach
-    void setUp() {
-        storageDao.add(user);
-        storageDao.add(registeredUser);
     }
 
     @Test
@@ -68,8 +68,13 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_loginSixChars_Ok() {
-        user.setLogin("unique");
-        assertEquals(user.getLogin().length(), registeredUser.getLogin().length());
+        User newUser = new User();
+        newUser.setLogin("unique");
+        newUser.setPassword("unique");
+        newUser.setAge(18);
+        newUser.setId(3L);
+        User registeredUser = registrationService.register(newUser);
+        assertEquals(newUser, registeredUser);
     }
 
     @Test

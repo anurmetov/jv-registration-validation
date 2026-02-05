@@ -2,11 +2,13 @@ package core.basesyntax.service;
 
 import core.basesyntax.dao.StorageDao;
 import core.basesyntax.dao.StorageDaoImpl;
-import core.basesyntax.db.Storage;
 import core.basesyntax.exceptions.InvalidDataException;
 import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
+    private static final int MIN_LEN_PASSWORD_LOGIN = 6;
+    private static final int MIN_AGE = 18;
+
     private final StorageDao storageDao = new StorageDaoImpl();
 
     @Override
@@ -25,19 +27,19 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         if (user.getLogin().isEmpty()) {
-            throw new InvalidDataException("Null login is not allowed");
+            throw new InvalidDataException("Empty login is not allowed");
         }
 
-        if (!Storage.people.contains(storageDao.get(user.getLogin()))) {
-            if (user.getLogin().length() >= 6) {
+        if (storageDao.get(user.getLogin()) != null) {
+            if (user.getLogin().length() >= MIN_LEN_PASSWORD_LOGIN) {
 
-                if (user.getPassword().length() >= 6) {
+                if (user.getPassword().length() >= MIN_LEN_PASSWORD_LOGIN) {
 
-                    if (user.getAge() >= 18) {
+                    if (user.getAge() >= MIN_AGE) {
                         storageDao.add(user);
                         return user;
                     } else {
-                        throw new InvalidDataException("Age should be over 18");
+                        throw new InvalidDataException("Age must be 18 or older.");
                     }
 
                 } else {
