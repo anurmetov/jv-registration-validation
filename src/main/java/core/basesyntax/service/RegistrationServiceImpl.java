@@ -12,7 +12,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final StorageDao storageDao = new StorageDaoImpl();
 
     @Override
-    public User register(User user) throws InvalidDataException {
+    public User register(User user) {
         if (user.getLogin() == null) {
             throw new InvalidDataException("Null login is not allowed");
         }
@@ -36,8 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 if (user.getPassword().length() >= MIN_LEN_PASSWORD_LOGIN) {
 
                     if (user.getAge() >= MIN_AGE) {
-                        storageDao.add(user);
-                        return user;
+                        return storageDao.add(user);
                     } else {
                         throw new InvalidDataException("Age must be 18 or older.");
                     }

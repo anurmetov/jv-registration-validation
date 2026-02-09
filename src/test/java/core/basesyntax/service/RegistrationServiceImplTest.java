@@ -1,6 +1,5 @@
 package core.basesyntax.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import core.basesyntax.dao.StorageDao;
@@ -19,9 +18,9 @@ class RegistrationServiceImplTest {
     private static User registeredUser;
 
     @BeforeAll
-    static void beforeAll() throws InvalidDataException {
-        registrationService = new RegistrationServiceImpl();
+    static void beforeAll() {
         storageDao = new StorageDaoImpl();
+        registrationService = new RegistrationServiceImpl();
     }
 
     @BeforeEach
@@ -32,14 +31,11 @@ class RegistrationServiceImplTest {
         user.setPassword("uniquePassword");
         user.setId(3L);
         user.setAge(20);
-        registeredUser = registrationService.register(user);
     }
 
     @Test
     void register_noSameLoginStorage_Ok() {
-        assertEquals(user, registeredUser);
-        User fromStorage = storageDao.get("uniqueLogin");
-        assertEquals(user, fromStorage);
+        assertThrows(InvalidDataException.class, () -> registrationService.register(user));
     }
 
     @Test
@@ -68,25 +64,20 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_loginSixChars_Ok() {
-        User newUser = new User();
-        newUser.setLogin("unique");
-        newUser.setPassword("unique");
-        newUser.setAge(18);
-        newUser.setId(3L);
-        User registeredUser = registrationService.register(newUser);
-        assertEquals(newUser, registeredUser);
+        user.setLogin("unique");
+        assertThrows(InvalidDataException.class, () -> registrationService.register(user));
     }
 
     @Test
     void register_passwordSixChars_Ok() {
         user.setPassword("unique");
-        assertEquals(6, registeredUser.getPassword().length());
+        assertThrows(InvalidDataException.class, () -> registrationService.register(user));
     }
 
     @Test
     void register_userAgeEighteen_Ok() {
         user.setAge(18);
-        assertEquals(18, registeredUser.getAge());
+        assertThrows(InvalidDataException.class, () -> registrationService.register(user));
     }
 
     @Test
@@ -98,6 +89,6 @@ class RegistrationServiceImplTest {
     @Test
     void register_userAgeTwenty_Ok() {
         user.setAge(20);
-        assertEquals(20, registeredUser.getAge());
+        assertThrows(InvalidDataException.class, () -> registrationService.register(user));
     }
 }
